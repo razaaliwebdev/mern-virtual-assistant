@@ -10,6 +10,10 @@ A powerful AI voice assistant built using the MERN stack (MongoDB, Express.js, R
 - Modern and responsive user interface
 - Secure API key management
 - Real-time communication between client and server
+- RESTful API architecture
+- Secure environment variable management
+- Error handling and logging
+- CORS enabled for cross-origin requests
 
 ## 🛠️ Tech Stack
 
@@ -26,6 +30,10 @@ A powerful AI voice assistant built using the MERN stack (MongoDB, Express.js, R
 - Express.js
 - MongoDB for data persistence
 - Google Gemini API integration
+- dotenv for environment variables
+- cors for cross-origin resource sharing
+- express-validator for request validation
+- mongoose for MongoDB object modeling
 
 ## 📋 Prerequisites
 
@@ -35,6 +43,7 @@ Before you begin, ensure you have the following installed:
 - MongoDB
 - Google Gemini API key
 - Git
+- npm or yarn package manager
 
 ## 🔧 Installation
 
@@ -65,6 +74,7 @@ npm install
 MONGODB_URI=your_mongodb_connection_string
 GEMINI_API_KEY=your_gemini_api_key
 PORT=5000
+NODE_ENV=development
 ```
 
 5. Create a `.env` file in the client directory:
@@ -106,10 +116,22 @@ Mern-Jarvis/
 └── server/               # Backend Node.js application
     ├── src/
     │   ├── controllers/ # Route controllers
+    │   │   ├── aiController.js    # AI interaction logic
+    │   │   └── userController.js  # User management
     │   ├── models/      # Database models
+    │   │   ├── User.js           # User schema
+    │   │   └── Conversation.js   # Chat history schema
     │   ├── routes/      # API routes
+    │   │   ├── ai.js             # AI endpoints
+    │   │   └── user.js           # User endpoints
+    │   ├── middleware/  # Custom middleware
+    │   │   ├── auth.js           # Authentication
+    │   │   └── error.js          # Error handling
     │   └── utils/       # Utility functions
-    └── server.js        # Entry point
+    │       ├── logger.js         # Logging utility
+    │       └── validators.js     # Input validation
+    ├── server.js        # Entry point
+    └── package.json     # Dependencies and scripts
 ```
 
 ## 🔐 Environment Variables
@@ -119,10 +141,44 @@ Mern-Jarvis/
 - `MONGODB_URI`: MongoDB connection string
 - `GEMINI_API_KEY`: Google Gemini API key
 - `PORT`: Server port number (default: 5000)
+- `NODE_ENV`: Environment (development/production)
 
 ### Client (.env)
 
 - `VITE_API_URL`: Backend API URL
+
+## 📡 API Endpoints
+
+### AI Endpoints
+
+- `POST /api/ai/chat`: Send message to AI
+- `POST /api/ai/voice`: Process voice input
+- `GET /api/ai/history`: Get chat history
+
+### User Endpoints
+
+- `POST /api/user/register`: Register new user
+- `POST /api/user/login`: User login
+- `GET /api/user/profile`: Get user profile
+
+## 🔒 Security Features
+
+- Environment variable protection
+- CORS configuration
+- Input validation
+- Error handling middleware
+- Secure API key storage
+- Request rate limiting
+
+## 🐛 Error Handling
+
+The server implements comprehensive error handling:
+
+- Custom error middleware
+- Structured error responses
+- Logging system for debugging
+- Input validation errors
+- API error responses
 
 ## 🤝 Contributing
 
