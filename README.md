@@ -208,102 +208,251 @@ Mern-Jarvis/
 
 - `VITE_API_URL`: Backend API URL
 
-## 📡 API Endpoints
+## 📡 API Documentation
+
+### Authentication Endpoints
+
+#### Register User
+
+```http
+POST /api/user/register
+Content-Type: application/json
+
+{
+  "username": "string",
+  "email": "string",
+  "password": "string"
+}
+```
+
+#### Login User
+
+```http
+POST /api/user/login
+Content-Type: application/json
+
+{
+  "email": "string",
+  "password": "string"
+}
+```
 
 ### AI Endpoints
 
-- `POST /api/ai/chat`: Send message to AI
-- `POST /api/ai/voice`: Process voice input
-- `GET /api/ai/history`: Get chat history
-- `DELETE /api/ai/history/:id`: Delete specific chat history
-- `GET /api/ai/status`: Get AI service status
+#### Send Message
 
-### User Endpoints
+```http
+POST /api/ai/chat
+Authorization: Bearer <token>
+Content-Type: application/json
 
-- `POST /api/user/register`: Register new user
-- `POST /api/user/login`: User login
-- `GET /api/user/profile`: Get user profile
-- `PUT /api/user/profile`: Update user profile
-- `DELETE /api/user/profile`: Delete user account
-- `POST /api/user/refresh-token`: Refresh JWT token
+{
+  "message": "string",
+  "context": "string" // optional
+}
+```
 
-## 🔒 Security Features
+#### Process Voice
 
-- Environment variable protection
-- CORS configuration
-- Input validation
-- Error handling middleware
-- Secure API key storage
-- Request rate limiting
-- JWT authentication
-- Password hashing with bcrypt
-- Helmet security headers
-- XSS protection
-- SQL injection prevention
-- Request sanitization
+```http
+POST /api/ai/voice
+Authorization: Bearer <token>
+Content-Type: multipart/form-data
+
+{
+  "audio": "file",
+  "format": "string" // wav, mp3, etc.
+}
+```
+
+## 📊 Database Schema
+
+### User Model
+
+```javascript
+{
+  username: String,
+  email: String,
+  password: String,
+  role: String,
+  createdAt: Date,
+  lastLogin: Date
+}
+```
+
+### Conversation Model
+
+```javascript
+{
+  userId: ObjectId,
+  messages: [{
+    role: String,
+    content: String,
+    timestamp: Date
+  }],
+  context: String,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+## 🔒 Security Implementation
+
+### Authentication Flow
+
+1. User registration with password hashing
+2. JWT token generation on login
+3. Token validation middleware
+4. Refresh token mechanism
+5. Password reset functionality
+
+### Rate Limiting
+
+```javascript
+const rateLimit = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later",
+};
+```
+
+### CORS Configuration
+
+```javascript
+const corsOptions = {
+  origin: process.env.CLIENT_URL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+```
 
 ## 🐛 Error Handling
 
-The server implements comprehensive error handling:
+### Error Response Format
 
-- Custom error middleware
-- Structured error responses
-- Logging system for debugging
-- Input validation errors
-- API error responses
-- Global error handler
-- Development/Production error formatting
-- Error tracking and monitoring
+```json
+{
+  "success": false,
+  "error": {
+    "code": "string",
+    "message": "string",
+    "details": "object" // optional
+  }
+}
+```
 
-## 📊 Logging
+### Common Error Codes
 
-The application uses Winston for logging with the following features:
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 429: Too Many Requests
+- 500: Internal Server Error
 
-- Multiple log levels (debug, info, warn, error)
+## 📊 Logging Implementation
+
+### Winston Logger Configuration
+
+```javascript
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: "error.log", level: "error" }),
+    new winston.transports.File({ filename: "combined.log" }),
+  ],
+});
+```
+
+## 🧪 Testing Strategy
+
+### Unit Tests
+
+- Controller tests
+- Service layer tests
+- Utility function tests
+- Model validation tests
+
+### Integration Tests
+
+- API endpoint tests
+- Authentication flow tests
+- Database interaction tests
+- Error handling tests
+
+### Test Coverage
+
+- Minimum 80% code coverage
+- Critical path 100% coverage
+- Regular coverage reports
+
+## 🚢 Deployment Checklist
+
+### Pre-deployment
+
+1. Environment variables configuration
+2. Database backup
+3. SSL certificate setup
+4. Domain configuration
+5. CI/CD pipeline verification
+
+### Deployment Steps
+
+1. Build client application
+2. Run database migrations
+3. Deploy server application
+4. Configure reverse proxy
+5. Enable monitoring
+6. Run smoke tests
+
+### Post-deployment
+
+1. Monitor application logs
+2. Check error rates
+3. Verify API endpoints
+4. Test authentication flow
+5. Monitor performance metrics
+
+## 📈 Performance Optimization
+
+### Server-side
+
+- Response compression
+- Caching strategies
+- Database indexing
+- Query optimization
+- Connection pooling
+
+### Client-side
+
+- Code splitting
+- Asset optimization
+- Lazy loading
+- Service worker implementation
+- Browser caching
+
+## 🔄 Maintenance
+
+### Regular Tasks
+
 - Log rotation
-- Console and file logging
-- Request logging middleware
-- Error logging
+- Database backup
+- Security updates
+- Dependency updates
 - Performance monitoring
-- Audit logging
 
-## 🧪 Testing
+### Monitoring
 
-The server includes comprehensive testing:
-
-- Unit tests with Jest
-- Integration tests
-- API endpoint testing
-- Mock services
-- Test coverage reporting
-- CI/CD integration
-
-## 🚢 Deployment
-
-### Local Deployment
-
-1. Build the client:
-
-```bash
-cd client
-npm run build
-```
-
-2. Start the server:
-
-```bash
-cd server
-npm start
-```
-
-### Production Deployment
-
-1. Set up environment variables
-2. Build the client
-3. Configure PM2 or similar process manager
-4. Set up Nginx reverse proxy
-5. Configure SSL certificates
-6. Set up monitoring and logging
+- Server health checks
+- API response times
+- Error rates
+- Resource usage
+- User activity
 
 ## 🤝 Contributing
 
